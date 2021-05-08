@@ -5,14 +5,14 @@
     <item
         android:id="@+id/allnotifications_item_clear"
         android:title="CLEAR"
-        android:icon="@drawable/ic_deleteicon"
+        android:icon="@drawable/myicon_clearnotifications"
         android:checkable="true"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/allnotifications_item_goback"
         android:title="GO BACK"
-        android:icon="@drawable/ic_goback"
+        android:icon="@drawable/myicon_goback"
         android:checkable="true"
         app:showAsAction="always"
         />

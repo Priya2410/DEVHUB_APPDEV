@@ -189,18 +189,6 @@
 
         </ImageView>
 
-<!--        <TextView-->
-<!--            android:id="@+id/model_image_status_deleteCountTV"-->
-<!--            android:layout_width="30dp"-->
-<!--            android:layout_height="30dp"-->
-<!--            android:layout_marginLeft="5dp"-->
-<!--            android:gravity="bottom|left"-->
-<!--            android:paddingBottom="5dp"-->
-<!--            android:text="0"-->
-<!--            android:textColor="@color/highlightercolor">-->
-
-<!--        </TextView>-->
-
     </LinearLayout>
 
     <ProgressBar

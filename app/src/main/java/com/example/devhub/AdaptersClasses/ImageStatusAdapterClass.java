@@ -1,6 +1,5 @@
 package com.example.devhub.AdaptersClasses;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.devhub.Activities.ImageCommentPage;
+import com.example.devhub.Activities.TextCommentPage;
 import com.example.devhub.AppClasses.AddNotifications;
 import com.example.devhub.ModelClasses.Model_ImageStatus;
 import com.example.devhub.R;
@@ -32,7 +32,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_ImageStatus, ImageStatusAdapterClass.ImageStatusViewHolderClass> {
 
@@ -40,43 +39,41 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
         super(options);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindViewHolder(@NonNull ImageStatusViewHolderClass imageStatusViewHolderClass, int position, @NonNull Model_ImageStatus model) {
-        imageStatusViewHolderClass.objectProgressBar.setVisibility(View.VISIBLE);
-        imageStatusViewHolderClass.userEmailTV.setText(model.getUseremail());
+    protected void onBindViewHolder(@NonNull ImageStatusViewHolderClass holder, int position, @NonNull Model_ImageStatus model) {
+        holder.objectProgressBar.setVisibility(View.VISIBLE);
+        holder.userEmailTV.setText(model.getUseremail());
 
-        imageStatusViewHolderClass.statusDateTV.setText(model.getCurrendatetime());
-        imageStatusViewHolderClass.imageStatusDescriptionTV.setText(model.getStatus());
+        holder.statusDateTV.setText(model.getCurrendatetime());
+        holder.imageStatusDescriptionTV.setText(model.getStatus());
 
-        imageStatusViewHolderClass.heartCountTV.setText(Integer.toString(model.getNooflove()));
-        imageStatusViewHolderClass.hahaCountTV.setText(Integer.toString(model.getNoofhaha()));
+        holder.heartCountTV.setText(Integer.toString(model.getNooflove()));
+        holder.hahaCountTV.setText(Integer.toString(model.getNoofhaha()));
 
-        imageStatusViewHolderClass.sadCountTV.setText(Integer.toString(model.getNoofsad()));
-        imageStatusViewHolderClass.noOfComments.setText(Integer.toString(model.getNoofcomments()));
+        holder.sadCountTV.setText(Integer.toString(model.getNoofsad()));
+        holder.noOfComments.setText(Integer.toString(model.getNoofcomments()));
 
         String linkOfProfileImage = model.getProfileurl();
         String linkOfImageStatus = model.getStatusimageurl();
 
-        Glide.with(imageStatusViewHolderClass.userProfileIV.getContext()).load(linkOfProfileImage)
-                .into(imageStatusViewHolderClass.userProfileIV);
+        Glide.with(holder.userProfileIV.getContext()).load(linkOfProfileImage)
+                .into(holder.userProfileIV);
 
-        Glide.with(imageStatusViewHolderClass.imageStatusIV.getContext()).load(linkOfImageStatus)
-                .into(imageStatusViewHolderClass.imageStatusIV);
+        Glide.with(holder.imageStatusIV.getContext()).load(linkOfImageStatus)
+                .into(holder.imageStatusIV);
 
-        imageStatusViewHolderClass.objectProgressBar.setVisibility(View.INVISIBLE);
+        holder.objectProgressBar.setVisibility(View.INVISIBLE);
         AddNotifications objectAddNotifications=new AddNotifications();
 
-        imageStatusViewHolderClass.heartIV.setOnClickListener(new View.OnClickListener() {
+        holder.heartIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth objFirebaseAuth = FirebaseAuth.getInstance();
-                if (objFirebaseAuth!=null) {
-                    final String userEmail = Objects.requireNonNull(objFirebaseAuth.getCurrentUser()).getEmail();
-                    final String documentID = getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getId();
+                if (objFirebaseAuth != null) {
+                    String userEmail = objFirebaseAuth.getCurrentUser().getEmail();
+                    String documentID = getSnapshots().getSnapshot(holder.getAdapterPosition()).getId();
 
                     FirebaseFirestore objectFirebaseFirestore = FirebaseFirestore.getInstance();
-                    assert userEmail != null;
                     DocumentReference objectDocumentReference = objectFirebaseFirestore.collection
                             ("ImageStatus").document(documentID).collection("Emotions")
                             .document(userEmail);
@@ -84,44 +81,45 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                     objectDocumentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (Objects.requireNonNull(task.getResult()).exists()) {
+                            if (task.getResult().exists()) {
                                 String currentFlag = task.getResult().getString("currentFlag");
                                 objectAddNotifications.generateNotification(userEmail,"love","image status",model.getUseremail());
 
-                                if(currentFlag.equals("love")) {
+                                if (currentFlag.equals("love")) {
                                     objectDocumentReference.update("currentFlag", "love");
 
-                                } else if (currentFlag.equals("haha"))
-                                {
-                                    Long totalHearts = (Long) getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).get("nooflove");
+                                } else if (currentFlag.equals("haha")) {
+                                    Long totalHearts = (Long) getSnapshots().getSnapshot(
+                                            holder.getAdapterPosition()).get("nooflove"
+                                    );
                                     totalHearts++;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("nooflove", totalHearts);
 
                                     objectDocumentReference.update("currentFlag", "love");
 
                                     Long totalHaha = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofhaha"
+                                            holder.getAdapterPosition()).get("noofhaha"
                                     );
                                     totalHaha--;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("noofhaha", totalHaha);
 
                                 } else if (currentFlag.equals("sad")) {
                                     Long totalHearts = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("nooflove");
+                                            holder.getAdapterPosition()).get("nooflove");
                                     totalHearts++;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("nooflove", totalHearts);
 
                                     objectDocumentReference.update("currentFlag", "love");
 
                                     Long totalSad = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofsad");
+                                            holder.getAdapterPosition()).get("noofsad");
 
                                     totalSad--;
 
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getReference()
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition()).getReference()
                                             .update("noofsad", totalSad);
 
                                 }
@@ -135,10 +133,10 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                                         userEmail).set(objectMap);
 
                                 Long totalHearts = (Long) getSnapshots().getSnapshot(
-                                        imageStatusViewHolderClass.getAdapterPosition()).get("nooflove"
+                                        holder.getAdapterPosition()).get("nooflove"
                                 );
                                 totalHearts++;
-                                getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                getSnapshots().getSnapshot(holder.getAdapterPosition())
                                         .getReference().update("nooflove", totalHearts);
 
                                 objectDocumentReference.update("currentFlag", "love");
@@ -148,22 +146,22 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(imageStatusViewHolderClass.heartIV.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(holder.heartIV.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
-                    Toast.makeText(imageStatusViewHolderClass.heartIV.getContext(), R.string.no_user_online, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.heartIV.getContext(), R.string.no_user_online, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        imageStatusViewHolderClass.hahaIV.setOnClickListener(new View.OnClickListener() {
+        holder.hahaIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth objFirebaseAuth = FirebaseAuth.getInstance();
                 if (objFirebaseAuth != null) {
                     String userEmail = objFirebaseAuth.getCurrentUser().getEmail();
-                    String documentID = getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getId();
+                    String documentID = getSnapshots().getSnapshot(holder.getAdapterPosition()).getId();
 
                     FirebaseFirestore objectFirebaseFirestore = FirebaseFirestore.getInstance();
                     DocumentReference objectDocumentReference = objectFirebaseFirestore.collection
@@ -182,36 +180,36 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
 
                                 } else if (currentFlag.equals("love")) {
                                     Long totalHaha = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofhaha"
+                                            holder.getAdapterPosition()).get("noofhaha"
                                     );
                                     totalHaha++;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("noofhaha", totalHaha);
 
                                     objectDocumentReference.update("currentFlag", "haha");
 
                                     Long totalLove = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("nooflove");
+                                            holder.getAdapterPosition()).get("nooflove");
                                     totalLove--;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("nooflove", totalLove);
 
                                 } else if (currentFlag.equals("sad")) {
                                     Long totalHaha = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofhaha"
+                                            holder.getAdapterPosition()).get("noofhaha"
                                     );
                                     totalHaha++;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("noofhaha", totalHaha);
 
                                     objectDocumentReference.update("currentFlag", "haha");
 
                                     Long totalSad = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofsad");
+                                            holder.getAdapterPosition()).get("noofsad");
 
                                     totalSad--;
 
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getReference()
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition()).getReference()
                                             .update("noofsad", totalSad);
 
                                 }
@@ -225,10 +223,10 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                                         userEmail).set(objectMap);
 
                                 Long totalHaha = (Long) getSnapshots().getSnapshot(
-                                        imageStatusViewHolderClass.getAdapterPosition()).get("noofhaha"
+                                        holder.getAdapterPosition()).get("noofhaha"
                                 );
                                 totalHaha++;
-                                getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                getSnapshots().getSnapshot(holder.getAdapterPosition())
                                         .getReference().update("noofhaha", totalHaha);
 
                                 objectDocumentReference.update("currentFlag", "haha");
@@ -238,22 +236,22 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(imageStatusViewHolderClass.hahaIV.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(holder.hahaIV.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
-                    Toast.makeText(imageStatusViewHolderClass.hahaIV.getContext(), R.string.no_user_online, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.hahaIV.getContext(), R.string.no_user_online, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        imageStatusViewHolderClass.sadIV.setOnClickListener(new View.OnClickListener() {
+        holder.sadIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth objFirebaseAuth = FirebaseAuth.getInstance();
                 if (objFirebaseAuth != null) {
                     String userEmail = objFirebaseAuth.getCurrentUser().getEmail();
-                    String documentID = getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getId();
+                    String documentID = getSnapshots().getSnapshot(holder.getAdapterPosition()).getId();
 
                     FirebaseFirestore objectFirebaseFirestore = FirebaseFirestore.getInstance();
                     DocumentReference objectDocumentReference = objectFirebaseFirestore.collection
@@ -272,34 +270,34 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
 
                                 } else if (currentFlag.equals("love")) {
                                     Long totalSad = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofsad");
+                                            holder.getAdapterPosition()).get("noofsad");
                                     totalSad++;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("noofsad", totalSad);
 
                                     objectDocumentReference.update("currentFlag", "sad");
 
                                     Long totalLove = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("nooflove");
+                                            holder.getAdapterPosition()).get("nooflove");
                                     totalLove--;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("nooflove", totalLove);
 
                                 } else if (currentFlag.equals("haha")) {
                                     Long totalSad = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofsad");
+                                            holder.getAdapterPosition()).get("noofsad");
                                     totalSad++;
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition())
                                             .getReference().update("noofsad", totalSad);
 
                                     objectDocumentReference.update("currentFlag", "sad");
 
                                     Long totalHaha = (Long) getSnapshots().getSnapshot(
-                                            imageStatusViewHolderClass.getAdapterPosition()).get("noofhaha");
+                                            holder.getAdapterPosition()).get("noofhaha");
 
                                     totalHaha--;
 
-                                    getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getReference()
+                                    getSnapshots().getSnapshot(holder.getAdapterPosition()).getReference()
                                             .update("noofhaha", totalHaha);
 
                                 }
@@ -313,10 +311,10 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                                         userEmail).set(objectMap);
 
                                 Long totalSad = (Long) getSnapshots().getSnapshot(
-                                        imageStatusViewHolderClass.getAdapterPosition()).get("noofsad"
+                                        holder.getAdapterPosition()).get("noofsad"
                                 );
                                 totalSad++;
-                                getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition())
+                                getSnapshots().getSnapshot(holder.getAdapterPosition())
                                         .getReference().update("noofsad", totalSad);
 
                                 objectDocumentReference.update("currentFlag", "sad");
@@ -326,21 +324,21 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(imageStatusViewHolderClass.sadIV.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(holder.sadIV.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
-                    Toast.makeText(imageStatusViewHolderClass.sadIV.getContext(), R.string.no_user_online, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.sadIV.getContext(), R.string.no_user_online, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        imageStatusViewHolderClass.commentIV.setOnClickListener(new View.OnClickListener() {
+        holder.commentIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String documentID = getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getId();
-                Context objectContext = imageStatusViewHolderClass.commentIV.getContext();
+                String documentID = getSnapshots().getSnapshot(holder.getAdapterPosition()).getId();
+                Context objectContext = holder.commentIV.getContext();
 
                 Intent objectIntent = new Intent(objectContext, ImageCommentPage.class);
                 objectIntent.putExtra("documentId", documentID);
@@ -350,7 +348,7 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
         }
         });
 
-        imageStatusViewHolderClass.deleteImageStatusIV.setOnClickListener(new View.OnClickListener() {
+        holder.deleteImageStatusIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth objectFirebaseAuth = FirebaseAuth.getInstance();
@@ -358,31 +356,31 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                 {
                     FirebaseFirestore objectFirebaseFirestore = FirebaseFirestore.getInstance();
                     objectFirebaseFirestore.collection("ImageStatus")
-                            .document(getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getId())
+                            .document(getSnapshots().getSnapshot(holder.getAdapterPosition()).getId())
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>()
                             {
                                 @Override
                                 public void onSuccess(Void aVoid)
                                 {
-                                    Toast.makeText(imageStatusViewHolderClass.deleteImageStatusIV.getContext(), R.string.status_deleted, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(holder.deleteImageStatusIV.getContext(), R.string.status_deleted, Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(imageStatusViewHolderClass.deleteImageStatusIV.getContext(), R.string.failed_to_delete_status, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(holder.deleteImageStatusIV.getContext(), R.string.failed_to_delete_status, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
-                    Toast.makeText(imageStatusViewHolderClass.deleteImageStatusIV.getContext(), R.string.cant_delete_this_status, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.deleteImageStatusIV.getContext(), R.string.cant_delete_this_status, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        imageStatusViewHolderClass.favouriteImageStatusIV.setOnClickListener(new View.OnClickListener() {
+        holder.favourtieImageStatusIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String documentId = getSnapshots().getSnapshot(imageStatusViewHolderClass.getAdapterPosition()).getId();
+                String documentId = getSnapshots().getSnapshot(holder.getAdapterPosition()).getId();
                 FirebaseFirestore objectFirebaseFirestore = FirebaseFirestore.getInstance();
 
                 DocumentReference objectDocumentReference = objectFirebaseFirestore.collection("ImageStatus")
@@ -414,19 +412,19 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
                                             .document(documentId).set(objectMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(imageStatusViewHolderClass.favouriteImageStatusIV.getContext(),R.string.status_added_to_favorites,Toast.LENGTH_LONG).show();
+                                            Toast.makeText(holder.favourtieImageStatusIV.getContext(),R.string.status_added_to_favorites,Toast.LENGTH_LONG).show();
                                             objectAddNotifications.generateNotification(emailOfUser,"favorite","image status",model.getUseremail());
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(imageStatusViewHolderClass.favouriteImageStatusIV.getContext(),R.string.failed_to_add_status_to_favorites,Toast.LENGTH_LONG).show();
+                                            Toast.makeText(holder.favourtieImageStatusIV.getContext(),R.string.failed_to_add_status_to_favorites,Toast.LENGTH_LONG).show();
                                         }
                                     });
                                 }
                                 else{
-                                    Toast.makeText(imageStatusViewHolderClass.favouriteImageStatusIV.getContext(), R.string.no_user_online, Toast.LENGTH_LONG ).show();
+                                    Toast.makeText(holder.favourtieImageStatusIV.getContext(), R.string.no_user_online, Toast.LENGTH_LONG ).show();
                                 }
                             }
                         })
@@ -446,11 +444,11 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
         return new ImageStatusViewHolderClass(LayoutInflater.from(parent.getContext()).inflate(R.layout.model_image_status, parent, false));
     }
 
-    public static class ImageStatusViewHolderClass extends RecyclerView.ViewHolder {
+    public class ImageStatusViewHolderClass extends RecyclerView.ViewHolder {
         ImageView imageStatusIV;
         TextView userEmailTV, statusDateTV, imageStatusDescriptionTV, heartCountTV, sadCountTV, hahaCountTV, noOfComments;
 
-        ImageView favouriteImageStatusIV, deleteImageStatusIV, userProfileIV;
+        ImageView favourtieImageStatusIV, deleteImageStatusIV, userProfileIV;
         ImageView heartIV, hahaIV, sadIV, commentIV;
 
         ProgressBar objectProgressBar;
@@ -466,7 +464,7 @@ public class ImageStatusAdapterClass extends FirestoreRecyclerAdapter<Model_Imag
             hahaCountTV = itemView.findViewById(R.id.model_image_status_hahaCountTV);
             noOfComments = itemView.findViewById(R.id.model_image_status_commentCountTV);
 
-            favouriteImageStatusIV = itemView.findViewById(R.id.model_image_status_favouriteImageStatusIV);
+            favourtieImageStatusIV = itemView.findViewById(R.id.model_image_status_favouriteImageStatusIV);
             deleteImageStatusIV = itemView.findViewById(R.id.model_image_status_deleteIV);
             userProfileIV = itemView.findViewById(R.id.model_image_status_profilePicIV);
             hahaIV = itemView.findViewById(R.id.model_image_status_hahaIV);

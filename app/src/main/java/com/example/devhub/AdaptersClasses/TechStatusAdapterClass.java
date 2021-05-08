@@ -48,6 +48,7 @@ public class TechStatusAdapterClass extends FirestoreRecyclerAdapter<Model_TechS
     protected void onBindViewHolder(@NonNull TechStatusViewHolder techStatusViewHolder, int i, @NonNull Model_TechStatus model_techStatus) {
 
         techStatusViewHolder.userStatusIV.setText(model_techStatus.getUseremail());
+        techStatusViewHolder.userEmailTV.setText(model_techStatus.getUseremail());
         techStatusViewHolder.dateTimeIV.setText(model_techStatus.getCurrentdatetime());
         techStatusViewHolder.userStatusIV.setText(model_techStatus.getStatus());
         techStatusViewHolder.heartCountIV.setText(Integer.toString(model_techStatus.getNooflove()));
@@ -436,7 +437,7 @@ public class TechStatusAdapterClass extends FirestoreRecyclerAdapter<Model_TechS
     public class TechStatusViewHolder extends RecyclerView.ViewHolder {
         ImageView profileIV;
         ImageView heartIV, hahaIV, sadIV, deleteIV, commentIV, favoriteIV;
-        TextView userEmailIV, dateTimeIV, userStatusIV, sadCountIV, heartCountIV, hahaCountIV, commentCountIV;
+        TextView userEmailTV, dateTimeIV, userStatusIV, sadCountIV, heartCountIV, hahaCountIV, commentCountIV;
 
         public TechStatusViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -447,7 +448,7 @@ public class TechStatusAdapterClass extends FirestoreRecyclerAdapter<Model_TechS
             deleteIV = itemView.findViewById(R.id.model_techStatus_deleteIV);
             commentIV = itemView.findViewById(R.id.model_techStatus_commentIV);
             favoriteIV = itemView.findViewById(R.id.model_techStatus_favouriteTechStatus);
-            userEmailIV = itemView.findViewById(R.id.model_techStatus_emailIV);
+            userEmailTV = itemView.findViewById(R.id.model_techStatus_emailTV);
             dateTimeIV = itemView.findViewById(R.id.model_techStatus_dateIV);
             userStatusIV = itemView.findViewById(R.id.model_techStatus_techStatusTV);
             heartCountIV = itemView.findViewById(R.id.model_techStatus_heartCountTV);

@@ -27,7 +27,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:id="@+id/model_techStatus_emailIV"
+        android:id="@+id/model_techStatus_emailTV"
         android:layout_toEndOf="@+id/model_techStatus_profileIV"
         android:text="email@email.com"
         android:textColor="@color/black"
@@ -39,7 +39,7 @@
         android:id="@+id/model_techStatus_dateIV"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_below="@+id/model_techStatus_emailIV"
+        android:layout_below="@+id/model_techStatus_emailTV"
         android:layout_marginStart="20dp"
         android:layout_toEndOf="@+id/model_techStatus_profileIV"
         android:text="00:00:00 00 Jan 2021"

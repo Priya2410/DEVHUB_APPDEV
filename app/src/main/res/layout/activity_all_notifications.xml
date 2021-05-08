@@ -16,6 +16,7 @@
         android:background="@color/lighterGrayColor"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:menu="@menu/all_notifications_menu"
         />
 
     <androidx.recyclerview.widget.RecyclerView

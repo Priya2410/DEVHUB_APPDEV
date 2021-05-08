@@ -95,7 +95,7 @@ public class LoginPage extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
                                     objectDialog.dismiss();
-                                    Toast.makeText(LoginPage.this, "Welcome" + loginPageEmailET.getText().toString(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginPage.this, "Welcome " + loginPageEmailET.getText().toString(), Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(LoginPage.this, MainContentPage.class));
                                 }
                             }).addOnFailureListener(new OnFailureListener() {

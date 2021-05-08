@@ -14,5 +14,6 @@
     <color name="colorPrimary">#FFC107</color>
     <color name="colorBackground">#AAFFDE</color>
     <color name="lighterGrayColor">#E6E2E2</color>
+    <color name="cardBackgroundBG">#FCFCFC</color>
 
 </resources>

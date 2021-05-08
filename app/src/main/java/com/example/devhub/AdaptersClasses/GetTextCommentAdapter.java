@@ -23,7 +23,7 @@ public class GetTextCommentAdapter extends FirestoreRecyclerAdapter<Model_GetTex
 
     @Override
     protected void onBindViewHolder(@NonNull GetTextCommentsViewHolder holder, int position, @NonNull Model_GetTextComments model) {
-        holder.userEmailTV.setText(model.getCommentperson());       //5:49; 9.3
+        holder.userEmailTV.setText(model.getCommentperson());
         holder.commentDateTV.setText(model.getCurrendatetime());
         holder.commentTV.setText(model.getComment());
         String profileImageUrl = model.getProfilepicurl();
